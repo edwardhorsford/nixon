@@ -56,7 +56,7 @@ Sizes settings are as follows:
 	For example:
 	```js
 	sizes: [{
-		name: 'Square crop'
+		name: 'square-crop'
 		width: 1024
 		crop: {
 			top: 100,
@@ -65,7 +65,7 @@ Sizes settings are as follows:
 			height: 100
 		}
 	},{
-		name: "Page h1",
+		name: "page-h1",
 		width: 1024,
 		crop: 'h1'
 	}]
@@ -109,13 +109,13 @@ Sizes settings are as follows:
 	sizes: [
 		{
 			name: 'iPhone-2',
-	width: 320
+			width: 320
 		},{
-	name: "iPhone-3g",
-	width: 320,
-	// 2x scale for retina
-	zoom: 2,
-	suffix: '_x2'
+			name: "iPhone-3g",
+			width: 320,
+			// 2x scale for retina
+			zoom: 2,
+			suffix: '_x2'
 		},{
 			name: 'page-h1'
 			width: 1024,
@@ -148,7 +148,7 @@ For example:
 steps: [
 	{
 		// Load the GOV.UK homepage
-		url: 'https://gov.uk',
+		url: 'https://www.gov.uk/',
 		name: 'govuk-homepage'
 	},{
 		// Navigate to benefits browse page
@@ -202,7 +202,7 @@ Step settings are as follows:
 	The `url` that the step expects to be on. Nixon will compare this with the actual url and warn if they don't match. Useful for debugging if javascript has navigated to the wrong page.
 	```js
 	// Expect to be taking a screenshot on GOV.UK browse
-	expectedUrl: 'https://gov.uk/browse'
+	expectedUrl: 'https://www.gov.uk/browse'
 	```
 
 * **js**<br />
@@ -291,7 +291,7 @@ Step settings are as follows:
 
 	`url` to navigate to at start of step. If no url is provided, the step follows on from the `url` of the previous step.
 	```js
-	url: 'https://gov.uk'
+	url: 'https://www.gov.uk/'
 	```
 
 	**Complex steps example**<br />
@@ -300,7 +300,7 @@ Step settings are as follows:
 	steps: [
 		{
 			// First step sets a starting url
-			url: 'https://gov.uk',
+			url: 'https://www.gov.uk/',
 			name: 'homepage',
 			description: 'The homepage of GOV.UK',
 			// Reload page so that cookie bar goes away
