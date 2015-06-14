@@ -51,12 +51,26 @@ if (!script.sizes){
 }
 
 var numSteps = 0;
-for (var step in script.steps){
-	numSteps++;
-}
 var numSizes = script.sizes.length;
-var numScreenshots = numSteps * numSizes;
-console.log('Total screenshots:', numScreenshots, '(' + numSteps, 'steps,', numSizes, 'sizes per step)');
+var imageCount = 0;
+
+
+script.steps.forEach(function(step){
+	numSteps++;
+	if (step.screenshotStep !== false){
+		script.sizes.forEach(function(){
+			imageCount++;
+		});
+		if (step.sizes){
+			step.sizes.forEach(function(){
+				imageCount++;
+			});
+		}
+	}
+});
+
+console.log(numSteps + " steps, " + numSizes + " sizes per step");
+console.log('Total screenshots:', imageCount);
 
 var errorCount = 0;
 var stepNumber = 1;
