@@ -18,12 +18,12 @@ module.exports = {
             suffix: '_x2'
         },
         {
-            name: "Page headings",
+            name: "page-heading",
             width: 1024,
             crop: 'h1'
         },
         {
-            name: "Square crop",
+            name: "square-crop",
             width: 1024,
             crop: {
                 top : 100,
@@ -34,14 +34,23 @@ module.exports = {
         }
     ],
 
-    steps : {
-
-        'home' : "https://www.gov.uk",
-
-        'browse': function(){
-
-            $('.categories-list a')[0].click();
-
+    steps: [
+        {
+            // Load the GOV.UK homepage and reload to get rid of 
+            // cookie bar
+            url: 'https://gov.uk',
+            name: 'govuk-homepage',
+            reloadPage: true,
+        },{
+            // Navigate to benefits browse page
+            name: 'browse-benefits',
+            // Click first anchor in browse list
+            js : function(){
+                $('.categories-list a')[0].click();
+            },
+            // Use expectedUrl to check that where we've browsed
+            // to is where we expected to be.
+            expectedUrl: 'https://gov.uk/browse/benefits'
         }
-    }
+    ]
 };
