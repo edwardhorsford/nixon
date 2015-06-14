@@ -50,7 +50,7 @@ module.exports = {
 			},
 			// Use expectedUrl to check that where we've browsed
 			// to is where we expected to be.
-			expectedUrl: 'https://gov.uk/browse/benefits'
+			expectedUrl: 'https://www.gov.uk/browse/benefits'
 		}
 	]
 };

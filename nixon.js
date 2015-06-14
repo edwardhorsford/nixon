@@ -75,6 +75,7 @@ console.log('Total screenshots:', imageCount);
 var errorCount = 0;
 var stepNumber = 1;
 var sizeCount = 1;
+var stepName = '';
 
 var processSizes = function(size, index, array){
 	var image= {};
@@ -88,8 +89,10 @@ var processSizes = function(size, index, array){
 	image.name = (size.name) ? size.name : image.width;
 	image.zoom = (size.zoom) ? size.zoom : 1;
 	image.suffix = (size.suffix) ? size.suffix : '';
+	// console.log(stepName);
+	var imageName = stepNumber + '-' + stepName + '-' + image.name + image.suffix + '.png';
 
-	var imageName = stepNumber + '-' + script.steps[index].name + '-' + image.name + image.suffix + '.png';
+	// var imageName = stepNumber + '-' + image.name + image.suffix + '.png';
 	var filename = path.join(imagePath, scriptName, String(image.name), imageName);
 	
 	horseman
@@ -133,7 +136,7 @@ var processSizes = function(size, index, array){
 
 script.steps.forEach(function(step){
 
-	var stepName = step.name;
+	stepName = step.name;
 
 	console.log('\nStep ' + stepNumber + " - " + stepName);
 	if (step.authentication){
