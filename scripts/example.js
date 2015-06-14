@@ -40,7 +40,7 @@ module.exports = {
             // cookie bar
             url: 'https://gov.uk',
             name: 'govuk-homepage',
-            reloadPage: true,
+            reloadPage: true
         },{
             // Navigate to benefits browse page
             name: 'browse-benefits',
