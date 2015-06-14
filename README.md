@@ -325,7 +325,7 @@ Step settings are as follows:
 			expectedUrl: 'https://www.gov.uk/browse/benefits'
 		},{
 			// Want to get to 'apply for universal credit' but go via browse page
-			name: 'browse-benefits-entitlement'
+			name: 'browse-benefits-entitlement',
 			js : function(){
 				// Click first link in benefits section
 				$('#section a')[0].click();
@@ -334,7 +334,7 @@ Step settings are as follows:
 			screenshotStep: false,
 			expectedUrl: 'https://www.gov.uk/browse/benefits/entitlement'
 		},{
-			name: 'apply-universal-credit'
+			name: 'apply-universal-credit',
 			description 'Universal credit start page',
 			js : function(){
 				// Click first link in benefits section
