@@ -75,7 +75,7 @@ var processSizes = function(size, index, array){
 	image.zoom = (size.zoom) ? size.zoom : 1;
 	image.suffix = (size.suffix) ? size.suffix : '';
 
-	var imageName = stepNumber + '-' + size.name + '-' + image.name + image.suffix + '.png';
+	var imageName = stepNumber + '-' + script.steps[index].name + '-' + image.name + image.suffix + '.png';
 	var filename = path.join(imagePath, scriptName, String(image.name), imageName);
 	
 	horseman
@@ -144,6 +144,10 @@ script.steps.forEach(function(step){
 	}
 
 	console.log(horseman.url());
+
+	if (step.reloadPage){
+		horseman.open(horseman.url());
+	}
 
 	if (step.description){
 		console.log('Description:', step.description);
