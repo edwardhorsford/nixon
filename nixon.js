@@ -60,90 +60,112 @@ console.log('Total screenshots:', numScreenshots, '(' + numSteps, 'steps,', numS
 
 var errorCount = 0;
 var stepNumber = 1;
+var sizeCount = 1;
 
-for (var name in script.steps){
-	
-	process.stdout.write('\nStep ' + stepNumber + " - " + name);
-
-	var step = script.steps[name];
-
-	if (step.call){
-
-		horseman.manipulate(step);
-
+var processSizes = function(size, index, array){
+	var image= {};
+	if ( !size.width ) {
+		errorCount++;
+		image.width = 1024; //default width
 	} else {
-
-		horseman.open(step);
-
+		image.width = size.width;
 	}
+	image.height = (size.height) ? size.height : 100;
+	image.name = (size.name) ? size.name : image.width;
+	image.zoom = (size.zoom) ? size.zoom : 1;
+	image.suffix = (size.suffix) ? size.suffix : '';
 
-	//console.log("waiting for next page ...");
+	var imageName = stepNumber + '-' + size.name + '-' + image.name + image.suffix + '.png';
+	var filename = path.join(imagePath, scriptName, String(image.name), imageName);
+	
+	horseman
+		.zoom(image.zoom)
+		.viewport((image.zoom * image.width), (image.zoom * image.height));
 
-	horseman.waitForNextPage();
-
-	//console.log("... done waiting");
-	console.log(':', horseman.url());
-
-	var sizeCount = 1;
-	script.sizes.forEach(function(size){
-
-		var image= {};
-		if ( !size.width ) {
-			errorCount++;
-			image.width = 1024; //default width
-		} else {
-			image.width = size.width;
-		}
-		image.height = (size.height) ? size.height : 100;
-		image.name = (size.name) ? size.name : image.width;
-		image.zoom = (size.zoom) ? size.zoom : 1;
-		image.suffix = (size.suffix) ? size.suffix : '';
-
-		var imageName = stepNumber + '-' + name + '-' + image.name + image.suffix + '.png';
-		var filename = path.join(imagePath, scriptName, String(image.name), imageName);
-		
-		horseman
-			.zoom(image.zoom)
-			.viewport((image.zoom * image.width), (image.zoom * image.height));
-
-		if (size.crop) {
-			console.log('\tSize', sizeCount, '-', image.name + ' (cropped):', imageName);
-			image.crop = size.crop;
-			if ( typeof size.crop === "string" ) {
-				// Don't crop if selector doesn't exist
-				if (!horseman.exists(size.crop)){
-					errorCount++;
-					console.warn('\tError: selector does not exist');
-				}
-				else {
-					image.crop = size.crop;
-					horseman.crop(image.crop, filename);
-				}
+	if (size.crop) {
+		console.log('\tSize', sizeCount, '-', image.name + ' (cropped):', imageName);
+		image.crop = size.crop;
+		if ( typeof size.crop === "string" ) {
+			// Don't crop if selector doesn't exist
+			if (!horseman.exists(size.crop)){
+				errorCount++;
+				console.warn('\tError: selector does not exist');
 			}
 			else {
-				image.crop.top = image.zoom * size.crop.top;
-				image.crop.left = image.zoom * size.crop.left;
-				image.crop.width = image.zoom * size.crop.width;
-				image.crop.height = image.zoom * size.crop.height;
+				image.crop = size.crop;
 				horseman.crop(image.crop, filename);
 			}
-		} else {
-			console.log('\tSize', sizeCount, '-', image.name + ':', imageName);
-			horseman
-				.screenshot(filename);
 		}
-
-		// Width error appears after screenshot
-		if (!size.width){
-			console.warn('\tError: width not set - using default (1024px)');
+		else {
+			image.crop.top = image.zoom * size.crop.top;
+			image.crop.left = image.zoom * size.crop.left;
+			image.crop.width = image.zoom * size.crop.width;
+			image.crop.height = image.zoom * size.crop.height;
+			horseman.crop(image.crop, filename);
 		}
+	} else {
+		console.log('\tSize', sizeCount, '-', image.name + ':', imageName);
+		horseman
+			.screenshot(filename);
+	}
 
-		sizeCount++;
-	});
+	// Width error appears after screenshot
+	if (!size.width){
+		console.warn('\tError: width not set - using default (1024px)');
+	}
+
+	sizeCount++;
+};
+
+script.steps.forEach(function(step){
+
+	var stepName = step.name;
+
+	console.log('\nStep ' + stepNumber + " - " + stepName);
+	if (step.authentication){
+		horseman.authentication(step.authentication.username, step.authentication.password);
+	}
+	if (step.url){
+		horseman.open(step.url);
+	}
+	if (step.upload){
+		horseman.upload(step.upload.selector, step.upload.path);
+	}
+	if (step.switchToTab){
+		horseman.switchToTab(step.switchToTab);
+	}
+	if (step.js){
+		horseman.manipulate(step.js);
+	}
+	if (step.delay){
+		horseman.wait(step.delay);
+	} else {
+		horseman.waitForNextPage();
+	}
+
+	console.log(horseman.url());
+
+	if (step.description){
+		console.log('Description:', step.description);
+	}
+	if (step.expectedUrl) {
+		if (horseman.url() != step.expectedUrl){
+			errorCount++;
+			console.warn('Error: expected url does not match. Expected:', step.expectedUrl);
+		}
+	}
+
+	if (step.screenshotStep !== false){
+		sizeCount = 1;
+		script.sizes.forEach(processSizes);
+		if (step.sizes){
+			step.sizes.forEach(processSizes);
+		}
+	}
+
 
 	stepNumber++;
-
-}
+});
 
 horseman.close();
 
