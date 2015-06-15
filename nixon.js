@@ -97,8 +97,8 @@ var processSizes = function(size, index, array){
 	
 	horseman
 		.zoom(image.zoom)
-		.viewport((image.zoom * image.width), (image.zoom * image.height));
-
+		.viewport((image.zoom * image.width), (image.zoom * image.height))
+		.wait(250);
 	if (size.crop) {
 		console.log('\tSize', sizeCount, '-', image.name + ' (cropped):', imageName);
 		image.crop = size.crop;
@@ -145,15 +145,24 @@ script.steps.forEach(function(step){
 	if (step.url){
 		horseman.open(step.url);
 	}
-	if (step.upload){
-		horseman.upload(step.upload.selector, step.upload.path);
-	}
+	
 	if (step.switchToTab){
 		horseman.switchToTab(step.switchToTab);
+	}
+	if (step.reloadPage){
+		horseman.open(horseman.url());
+	}
+
+	if (step.upload){
+		horseman.upload(step.upload.selector, step.upload.path);
 	}
 	if (step.js){
 		horseman.manipulate(step.js);
 	}
+	horseman.manipulate(function(){
+		$('html').css({backgroundColor: '#FFFFFF'});
+	}
+	);
 	if (step.delay){
 		horseman.wait(step.delay);
 	} else {
@@ -162,9 +171,7 @@ script.steps.forEach(function(step){
 
 	console.log(horseman.url());
 
-	if (step.reloadPage){
-		horseman.open(horseman.url());
-	}
+	
 
 	if (step.description){
 		console.log('Description:', step.description);
